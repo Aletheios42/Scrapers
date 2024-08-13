@@ -47,10 +47,66 @@ class BookscraperPipeline:
 
         # star rating into integer
         # Diccionario para mapear palabras a números
-        star_map = {"zero": 0, "one": 1, "two": 2, "three": 3, "four": 4, "five": 5}
+        star_map = {"zero": 0, "one": 1, "two": 2,
+                    "three": 3, "four": 4, "five": 5}
         star_string = adapter.get("star")
         split_star_array = star_string.split(" ")
         star_text_value = split_star_array[1].lower()
         adapter["star"] = star_map[star_text_value]
 
         return item
+
+
+class SaveToMySQLPipeline:
+    def __init__(self):
+        self.conn = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            database="books",
+        )
+
+        # create cursor to execute commandans
+        self.cur = self.conn.cursor()
+
+    def create_table_if_not_exists(self):
+        create_table_query = """
+        CREATE TABLE IF NOT EXISTS books (
+            id int NOT NULL auto_increment,
+            url VARCHAR(255) PRIMARY KEY,
+            title text,
+            upc VARCHAR(255),
+            product_type VARCHAR(255),
+            price_excl_tax DECIMAL,
+            price_incl_tax DECIMAL,
+            tax DECIMAL,
+            price DECIAMAL,
+            availability INT,
+            num_reviews INT,
+            star INT,
+            category VARCHAR(255),
+            description TEXT,
+            PRIMARY KEY (id)
+        );
+        """
+
+    def process_item(self, item, spider):
+
+        # defien insert
+        self.cur.execute("""  insert into books (
+            url,
+            title,
+            upc,
+            product_type,
+            price_excl_tax,
+            price_incl_tax,
+            tax,
+            price,
+            availability,
+            num_reviews,
+            star,
+            category,
+            description,
+        ) values (
+            
+        )
