@@ -63,10 +63,10 @@ class SaveToMySQLPipeline:
     def __init__(self):
         try:
             self.conn = mysql.connector.connect(
-                host="mysql",  # Cambia de 'localhost' a 'mysql' para Docker
+                host="mysql",
                 user="root",
-                password="rootpassword",  # Usa la contraseña correcta
-                database="books",  # Usa la base de datos 'books'
+                password="rootpassword",
+                database="books",
             )
 
             self.cur = self.conn.cursor()
@@ -75,12 +75,6 @@ class SaveToMySQLPipeline:
             self.create_table_if_not_exists()
         except mysql.connector.Error as err:
             print(f"Error: {err}")
-            if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                print("Something is wrong with your user name or password")
-            elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                print("Database does not exist")
-            else:
-                print(err)
             raise
 
     def create_table_if_not_exists(self):
@@ -128,39 +122,22 @@ class SaveToMySQLPipeline:
                 star,
                 category,
                 description
-            ) VALUES (
-                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
-            )
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """,
             (
-                item.get("url")[0] if item.get("url") else None,
-                item.get("title")[0] if item.get("title") else None,
-                item.get("upc")[0] if item.get("upc") else None,
-                item.get("product_type")[0] if item.get(
-                    "product_type") else None,
-                float(item.get("price_excl_tax")[
-                      0].replace("£", "").replace(",", ""))
-                if item.get("price_excl_tax")
-                else None,
-                float(item.get("price_incl_tax")[
-                      0].replace("£", "").replace(",", ""))
-                if item.get("price_incl_tax")
-                else None,
-                float(item.get("tax")[0].replace("£", "").replace(",", ""))
-                if item.get("tax")
-                else None,
-                float(item.get("price")[0].replace("£", "").replace(",", ""))
-                if item.get("price")
-                else None,
-                int(item.get("availability")[0].split()[0])
-                if item.get("availability")
-                else None,
-                int(item.get("num_reviews")[0]) if item.get(
-                    "num_reviews") else None,
-                int(item.get("star")[0]) if item.get("star") else None,
-                item.get("category")[0] if item.get("category") else None,
-                item.get("description")[0] if item.get(
-                    "description") else None,
+                item["url"],
+                item["title"],
+                item["upc"],
+                item["product_type"],
+                item["price_excl_tax"],
+                item["price_incl_tax"],
+                item["tax"],
+                item["price"],
+                item["availability"],
+                item["num_reviews"],
+                item["star"],
+                item["category"],
+                str(item["description"][0]),
             ),
         )
         self.conn.commit()

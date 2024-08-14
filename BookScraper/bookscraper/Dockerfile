@@ -12,5 +12,5 @@ RUN chmod +x /wait-for-it.sh
 COPY . .
 
 # Espera a que MySQL esté disponible antes de ejecutar Scrapy
-CMD ["./wait-for-it.sh", "mysql:3306", "--", "scrapy", "crawl", "bookspider"]
+CMD ["./wait-for-it.sh", "mysql:3306", "-t", "60", "--", "scrapy", "crawl", "bookspider"]
 
