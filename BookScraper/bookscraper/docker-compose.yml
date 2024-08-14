@@ -7,8 +7,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: books
-      MYSQL_USER: root
-      MYSQL_PASSWORD: rootpassword
     ports:
       - "3306:3306"
     volumes:
@@ -21,13 +19,7 @@ services:
     container_name: scrapy
     depends_on:
       - mysql
-    environment:
-      - MYSQL_HOST=mysql
-      - MYSQL_PORT=3306
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=rootpassword
-      - MYSQL_DATABASE=books
-    command: scrapy crawl myspider
+    command: scrapy crawl bookspider
 
 volumes:
   mysql_data:
